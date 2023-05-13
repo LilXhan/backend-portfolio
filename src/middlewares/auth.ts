@@ -8,7 +8,6 @@ import excludedFields from '../utils/excludeFields';
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.split(' ').pop();
-
     if (!token) {
       handleErrorHttp(res, 401, 'unauthorized');
     } else {

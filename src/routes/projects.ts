@@ -10,7 +10,7 @@ const projectsController = new ProjectsController();
 router.get('/', projectsController.get);
 router.post('/', authMiddleware, checkRole, bodyValidator, projectsController.create);
 router.get('/:id', authMiddleware, idValidator, projectsController.retrieve);
-router.put('/:id', authMiddleware, idValidator, bodyValidator, projectsController.update);
-router.delete('/:id', authMiddleware, idValidator, projectsController.delete);
+router.put('/:id', authMiddleware, checkRole, idValidator, bodyValidator, projectsController.update);
+router.delete('/:id', authMiddleware, checkRole, idValidator, projectsController.delete);
 
 export { router };

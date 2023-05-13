@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import handleErrorHttp from '../utils/errorHttp';
 import prisma from '../utils/prisma';
 import { matchedData } from 'express-validator';
+import { getFileUrl } from '../utils/s3';
 
 export class ProjectsController {
 
@@ -12,6 +13,20 @@ export class ProjectsController {
           image: true
         }
       });
+
+      for (let project of projects) {
+        let { filename } = project.image[0];
+        let url = await getFileUrl(filename);
+        await prisma.image.update({
+          where: {
+            project_owner: Number(project.id)
+          },
+          data: {
+            url: url
+          }
+        });
+      };
+
       res.status(200).json({
         status: 'OK',
         data: projects
