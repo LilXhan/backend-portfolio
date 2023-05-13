@@ -1,32 +1,16 @@
 import { Request, Response } from 'express';
 import handleErrorHttp from '../utils/errorHttp';
-import prisma from '../utils/prisma';
 import { matchedData } from 'express-validator';
-import { getFileUrl } from '../utils/s3';
+import { ProjectsService } from '../services/projects';
+import { Project } from '@prisma/client';
+
+const projectsService = new ProjectsService();
 
 export class ProjectsController {
 
-  public async get(req: Request, res: Response) {
+  public async get(_: Request, res: Response) {
     try {
-      const projects = await prisma.project.findMany({
-        include: {
-          image: true
-        }
-      });
-
-      for (let project of projects) {
-        let { filename } = project.image[0];
-        let url = await getFileUrl(filename);
-        await prisma.image.update({
-          where: {
-            project_owner: Number(project.id)
-          },
-          data: {
-            url: url
-          }
-        });
-      };
-
+      const projects = await projectsService.getAllProjects();
       res.status(200).json({
         status: 'OK',
         data: projects
@@ -35,20 +19,24 @@ export class ProjectsController {
       handleErrorHttp(res, 400, error.message);
     };
   };
+  
+  public async retrieve(req: Request, res: Response) {
+    try {
+      const { id } = matchedData(req);
+      const project = await projectsService.getProjectById(id);
+      res.status(200).json({
+        status: 'OK',
+        data: project
+      });
+    } catch (error: any) {
+      handleErrorHttp(res, 400, error.message);
+    };
+  };
 
   public async create(req: Request, res: Response) {
     try {
-      const body = matchedData(req);
-      const project = await prisma.project.create({
-        data: {
-          title: body.title,
-          description: body.description,
-          github: body.github,
-          demo: body.demo,
-          tag: body.tag,
-          user: { connect: { email: body.user } },
-        }
-      });
+      const body = matchedData(req) as Project;
+      const project = await projectsService.createProject(body)
       res.status(201).json({
         status: 'OK',
         data: project
@@ -58,39 +46,11 @@ export class ProjectsController {
     };
   };
 
-  public async retrieve(req: Request, res: Response) {
-    try {
-      const { id } = matchedData(req);
-      const project = await prisma.project.findUnique({
-        where: {
-          id: id
-        }
-      });
-      res.status(200).json({
-        status: 'OK',
-        data: project
-      });
-    } catch (error: any) {
-      handleErrorHttp(res, 400, error.message);
-    };
-  };
 
   public async update(req: Request, res: Response) {
     try {
       const {id, ...body} = matchedData(req);
-      const project = await prisma.project.update({
-        where: {
-          id: id
-        },
-        data: {
-          title: body.title,
-          description: body.description,
-          github: body.github,
-          demo: body.demo,
-          tag: body.tag,
-          user: { connect: { email: body.user } } 
-        }
-      });
+      const project = await projectsService.updateProject(id, body as Project);
       res.status(200).json({
         status: 'OK',
         data: project
@@ -103,12 +63,8 @@ export class ProjectsController {
   public async delete(req: Request, res: Response) {
     try {
       const { id } = matchedData(req);
-      const project = await prisma.project.delete({
-        where: {
-          id: id
-        }
-      });
-      res.status(200).json({
+      const project = await projectsService.deleteProject(id);
+      res.status(204).json({
         status: 'OK',
         data: project
       });

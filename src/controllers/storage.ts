@@ -1,25 +1,17 @@
-import prisma from '../utils/prisma';
 import handleErrorHttp from '../utils/errorHttp';
 import { Request, Response } from 'express';
-import { uploadFile } from '../utils/s3';
 import deleteFileInDirStatic from '../utils/deleteFIle';
+import { StorageService } from '../services/storage';
+
+const storageService = new StorageService();
 
 class StorageController {
   public async create(req: Request, res: Response) {
     try {
       const { idProject } = req.body;
       const { filename } = req.file!;
+      const { result, image } = await storageService.createImage(filename, idProject);
 
-      const image = await prisma.image.create({
-        data: {
-          url: 'none',
-          filename: filename,
-          project: { connect: { id: Number(idProject) } }
-        }
-      });
-
-      const result = await uploadFile(filename);
-      deleteFileInDirStatic(filename);
       res.status(201).json({
         status: 'OK',
         data: image,

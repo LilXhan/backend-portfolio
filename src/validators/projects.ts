@@ -8,7 +8,7 @@ export const bodyValidator = [
   check('github').isURL().notEmpty().exists(),
   check('demo').isURL().optional(),
   check('tag').exists().notEmpty().isLength({min: 2, max: 2}),
-  check('user').exists().notEmpty().isEmail(),
+  check('user_owner').exists().notEmpty().isEmail(),
   (req: Request, res: Response, next: NextFunction) => {
     return validateData(req, res ,next);
   }
