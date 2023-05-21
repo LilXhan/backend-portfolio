@@ -3,7 +3,7 @@ import handleErrorHttp from '../utils/errorHttp';
 
 const checkRole = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { role } = req.user;
+    const { role }: any = req.user;
     if (role === 'ADMIN') {
       next();
     } else {

@@ -14,7 +14,11 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/v1', router);
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
+
+io.on('connection', socket => {
+  app.set('socket', socket);
+});
 
 httpServer.listen(PORT, () => {
   console.log(`server running on port http://localhost:${PORT}`);
