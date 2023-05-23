@@ -7,18 +7,24 @@ import router from './routes';
 
 const app: Express = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ['http://localhost:5173', 'https://flavioalvarado.me']
+  }
+});
 
 config();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://flavioalvarado.me']
+}));
 app.use('/api/v1', router);
 
-const PORT = process.env.PORT;
-
 io.on('connection', socket => {
-  app.set('socket', socket);
+  socket.emit('hello', 'hola');
 });
+
+const PORT = process.env.PORT;
 
 httpServer.listen(PORT, () => {
   console.log(`server running on port http://localhost:${PORT}`);

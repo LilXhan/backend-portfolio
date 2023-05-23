@@ -23,7 +23,6 @@ export const getFileUrl = async (filename: string) => {
   });
 
   const result = await getSignedUrl(client, command, { expiresIn: 60 });
-  console.log(result);
   return result;
 };
 

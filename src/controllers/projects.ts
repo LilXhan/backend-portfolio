@@ -7,8 +7,7 @@ import { Project } from '@prisma/client';
 const projectsService = new ProjectsService();
 
 export class ProjectsController {
-
-  public async get(_: Request, res: Response) {
+  public async get(req: Request, res: Response) {
     try {
       const projects = await projectsService.getAllProjects();
       res.status(200).json({
