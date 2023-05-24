@@ -4,23 +4,28 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import { config } from 'dotenv';
 import router from './routes';
+import Helmet from 'helmet';
 
 const app: Express = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:5173', 'https://flavioalvarado.me'],
+    origin: ['https://flavioalvarado.me'],
   },
 });
 config();
+
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://flavioalvarado.me']
+  origin: ['https://flavioalvarado.me'],
 }));
-app.use((_, res, next) => {
-  res.setHeader("Access-Control-Allow-Private-Network", "true")
+app.use(Helmet());
+
+app.use((_req, res, next) => {
+  res.setHeader('Access-Control-Allow-Private-Network', 'true');
   next();
 });
+
 app.use('/api/v1', router);
 app.set('io', io);
 
