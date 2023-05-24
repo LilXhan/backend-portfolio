@@ -9,20 +9,20 @@ const app: Express = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:5173', 'https://flavioalvarado.me']
-  }
+    origin: ['http://localhost:5173', 'https://flavioalvarado.me'],
+  },
 });
-
 config();
 app.use(express.json());
 app.use(cors({
   origin: ['http://localhost:5173', 'https://flavioalvarado.me']
 }));
-app.use('/api/v1', router);
-
-io.on('connection', socket => {
-  socket.emit('hello', 'hola');
+app.use((_, res, next) => {
+  res.setHeader("Access-Control-Allow-Private-Network", "true")
+  next();
 });
+app.use('/api/v1', router);
+app.set('io', io);
 
 const PORT = process.env.PORT;
 

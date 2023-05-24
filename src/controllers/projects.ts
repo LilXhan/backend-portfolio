@@ -36,6 +36,12 @@ export class ProjectsController {
     try {
       const body = matchedData(req) as Project;
       const project = await projectsService.createProject(body)
+
+      if (project) {
+        const io = req.app.get('io');
+        io.emit('new project', project);
+      };
+
       res.status(201).json({
         status: 'OK',
         data: project

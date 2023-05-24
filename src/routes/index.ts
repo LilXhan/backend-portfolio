@@ -7,7 +7,7 @@ const extractName = (filename: string) => {
   return filename.split('.').shift();
 };
 
-fs.readdir(__dirname, (err, files) => {
+fs.readdir(__dirname, (_, files) => {
   files.filter(file => {
     const name = extractName(file);
     if (name !== 'index') {
