@@ -1,7 +1,7 @@
-import { Project } from '@prisma/client';
 import prisma from '../utils/prisma';
 import { getFileUrl } from '../utils/s3';
 import { deleteFile } from '../utils/s3';
+import { IProject } from '../types/project.type';
 
 export class ProjectsService {
   
@@ -37,7 +37,7 @@ export class ProjectsService {
     return project;
   };
 
-  public async createProject(body: Project) {
+  public async createProject(body: IProject) {
     const project = await prisma.project.create({
       data: {
         title: body.title,
@@ -52,7 +52,7 @@ export class ProjectsService {
     return project;
   };
 
-  public async updateProject(id: string, body: Project) {
+  public async updateProject(id: string, body: IProject) {
     const project = await prisma.project.update({
       where: {
         id: Number(id)
