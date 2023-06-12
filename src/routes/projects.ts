@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import authMiddleware from '../middlewares/auth';
+import { authMiddleware } from '../middlewares/auth';
 import { ProjectsController } from '../controllers/projects';
 import { bodyValidator, idValidator } from '../validators/projects';
-import checkRole from '../middlewares/role';
+import { checkRole } from '../middlewares/role';
 const router: Router = Router();
 
 const projectsController = new ProjectsController();

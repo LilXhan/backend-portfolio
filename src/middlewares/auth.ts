@@ -5,7 +5,7 @@ import prisma from '../utils/prisma';
 import { Payload } from '../types/payload.type';
 import excludedFields from '../utils/excludeFields';
 
-const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.split(' ').pop();
     if (!token) {
@@ -30,4 +30,27 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
   };
 };
 
-export default authMiddleware;
+export const authMiddlewareGraphql = async (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization?.split(' ').pop();
+    if (!token) {
+      handleErrorHttp(res, 401, 'unauthorized');
+    } else {
+      const payload = verifyToken(token) as Payload;
+      if (!payload) {
+        handleErrorHttp(res, 401, 'unauthorized');
+      } else {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: payload.id
+          }
+        });
+        const userWithoutPasswordEmail = excludedFields(user, ['password', 'email']);
+        req.user = userWithoutPasswordEmail;
+        return userWithoutPasswordEmail;
+      };
+    };
+  } catch (error) {
+    handleErrorHttp(res, 401, 'unauthorized');
+  };
+};

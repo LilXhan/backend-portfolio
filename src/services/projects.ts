@@ -31,7 +31,7 @@ export class ProjectsService {
     const project = await prisma.project.findUnique({
       where: {
         id: Number(id)
-      }
+      },
     });
 
     return project;
@@ -42,8 +42,8 @@ export class ProjectsService {
       data: {
         title: body.title,
         description: body.description,
-        github: body.github,
-        demo: body.demo,
+        github: body.github.href,
+        demo: body.demo?.href,
         tag: body.tag,
         user: { connect: { email: body.user_owner } },
       }
@@ -60,8 +60,8 @@ export class ProjectsService {
       data: {
         title: body.title,
         description: body.description,
-        github: body.github,
-        demo: body.demo,
+        github: body.github.href,
+        demo: body.demo?.href,
         tag: body.tag,
         user: { connect: { email: body.user_owner } } 
       }
@@ -78,18 +78,19 @@ export class ProjectsService {
       }
     });
 
-    await prisma.image.delete({
-      where: { id: image!.id }
-    });
+    if (image) {
+      await prisma.image.delete({
+        where: { id: image!.id }
+      });
+      await deleteFile(image!.filename);
+    }
 
-    await prisma.project.delete({
+    const project = await prisma.project.delete({
       where: {
         id: Number(id)
       }
     });
 
-    const result = await deleteFile(image!.filename);
-
-    return result;
+    return project;
   };
 }
