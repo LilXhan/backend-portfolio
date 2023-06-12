@@ -23,19 +23,6 @@ export interface IUpdateProject {
   }
 }
 
-export interface IProject {
-  id: number
-  title: string
-  description: string
-  github: {
-    href: string
-  }
-  demo: {
-    href: string
-  }
-  tag: Tag
-  user_owner: string
-}
 
 export interface IByID {
   id: string
