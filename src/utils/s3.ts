@@ -1,4 +1,4 @@
-import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, GetObjectCommand, DeleteObjectCommand, __Client } from "@aws-sdk/client-s3";
 import client from "../config/s3Config";
 import fs from 'fs';
 import path from "path";
