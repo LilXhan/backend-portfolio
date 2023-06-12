@@ -1,3 +1,4 @@
+import { Tag } from '@prisma/client'
 
 export interface ICreateProject {
   dto: {
@@ -5,7 +6,7 @@ export interface ICreateProject {
     description: string
     github: string
     demo?: string
-    tag: Tag
+    tag: ETag
     user_owner: string
   }
 }
@@ -17,16 +18,30 @@ export interface IUpdateProject {
     description?: string
     github?: string
     demo?: string
-    tag?: Tag
+    tag?: ETag
     user_owner?: string
   }
+}
+
+export interface IProject {
+  id: number
+  title: string
+  description: string
+  github: {
+    href: string
+  }
+  demo: {
+    href: string
+  }
+  tag: Tag
+  user_owner: string
 }
 
 export interface IByID {
   id: string
 }
 
-enum Tag {
+enum ETag {
   JS,
   TS,
   PY
