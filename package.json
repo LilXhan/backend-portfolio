@@ -1,6 +1,9 @@
 {
   "name": "portafolio-real",
   "version": "1.0.0",
+  "engines": {
+    "node": "18"
+  },
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npx tsc --watch\" \"node --watch ./dist/index.js\"",
